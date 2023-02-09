@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Ver cámara trasera a pantalla completa</title>
+ 
+<style>
+  body {
+    /* Quitamos márgenes a la página */
+    margin: 0px;
+  }
+  video {
+    /* El vídeo ocupará TODA la pantalla */
+    width: 100vw;
+    height: 100vh;
+    /* Mejor relleno */
+    object-fit: cover;
+    /* Enviamos el componente al fondo */
+    position: absolute;
+    z-index: -1;
+  }
+  #chatdevoz {
+    width: 100vw;
+    height: 100vh;
+    border: 0px;
+  }
+  #chatdevoz.ocultar {
+    position: absolute;
+    z-index: -2;
+  }
+  #ocultarchat.ocultar {
+    display: none;
+  }
+  #datos {
+    font-size: larger;
+  }
+</style>
+</head>
+ 
+<body>
+ <video autoplay="true" onclick="pantallaCompleta();"></video>
+ <div id="datos">-</div>
+<script>
+/* Buscamos el elemento de vídeo */
+var video = document.querySelector("video");
+
+/* Si el navegador lo soporta, obtenemos el elemento de cámara */
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({
+    video: {
+      facingMode: "environment",
+      width: { min: 640, ideal: 1920, max: 1920 },
+      height: { min: 480, ideal: 1080, max: 1080 }
+    }
+  })
+    .then(function (stream) {
+      video.srcObject = stream;
+    })
+    .catch(function () {
+      console.log("Algo ha ido mal");
+    });
+}
+function pantallaCompleta() {
+  console.log('Entrando en pantalla completa');
+  if (video.requestFullscreen) {
+    video.requestFullscreen();
+  } else if (video.webkitRequestFullscreen) {
+    video.webkitRequestFullscreen();
+  } else if (video.msRequestFullscreen) {
+    video.msRequestFullscreen();
+  }
+}
+setInterval(() => { datos.innerText = `${video.videoWidth}x${video.videoHeight}`; }, 5000);
+</script>
+</body>
+</html>
